@@ -16,9 +16,10 @@ data = yf.download('AAPL','2016-01-01','2022-01-01')
 # data.Close.plot() 
 # plt.show() 
 
-#print (data)
 dates = []
 high = []
+low = []
+num_days = []
 ticker = 'AAPL'
 tickerTag = yf.Ticker('AAPL')
 tickerTag.history(period="max").to_csv("tickertag{}.csv".format('AAPL'))
@@ -27,6 +28,12 @@ with open('tickertagAAPL.csv',newline = '') as csvfile:
     for row in reader:
         dates.append(row['Date'])
         high.append(row['High'])
+        low.append(row['Low'])
+    date_cycle = len(dates)
+
+    for i in range(date_cycle):
+        num_days.append(i)
+    #print(num_days)#test statement
 
 xs = np.array([], dtype = float)
 ys = np.array([], dtype=float)
@@ -34,7 +41,7 @@ ys = np.array([], dtype=float)
 model = keras.Sequential([keras.layers.Dense(units=1,input_shape =[1])])
 model.compile(optimizer ='sgd', loss = 'mean_squared_error')
 
-xs = np.array(dates, dtype = float)
-ys = np.array(high, dtype=float)
-model.fit(xs,ys,epochs = 500)
-print(model.predict([10.0]))
+xs = np.array(high, dtype = float)
+ys = np.array(num_days, dtype=float)
+model.fit(xs,ys,epochs = 50)
+print(model.predict(int(len(num_days))+1))
