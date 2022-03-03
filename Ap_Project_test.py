@@ -20,8 +20,21 @@ dates = []
 high = []
 low = []
 num_days = []
-ticker = 'AAPL'
-tickerTag = yf.Ticker('AAPL')
+
+Companies = input("pick one, type the number of the company.\n1. google\n2. amazon\n3. apple\n4. tesla")
+if Companies == '1':
+    ticker = 'GOOGL'
+if Companies == '2':
+    ticker = 'AMZN'
+if Companies == '3':
+    ticker = 'AAPL'
+if Companies == '4':
+    ticker = 'TSLA'
+
+
+
+
+tickerTag = yf.Ticker(ticker)
 tickerTag.history(period="max").to_csv("tickertag{}.csv".format('AAPL'))
 with open('tickertagAAPL.csv',newline = '') as csvfile:
     reader = csv.DictReader(csvfile)
