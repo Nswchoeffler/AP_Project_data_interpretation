@@ -11,14 +11,7 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import LSTM
 from tensorflow.keras.layers import Dropout
 
-# Get the data of the stock AAPL 
-data = yf.download('AAPL','2016-01-01','2022-01-01') 
-# Plot the close price of the AAPL 
-# plt.xlabel('date')
-# plt.title('Price of AAPL', fontsize = 20)
-# plt.grid()
-# data.Close.plot() 
-# plt.show() 
+
 
 dates = []
 high = []
@@ -39,7 +32,7 @@ if Companies == '4':
 
 
 tickerTag = yf.Ticker(ticker)
-tickerTag.history(period="max").to_csv("tickertag{}.csv".format(ticker))
+tickerTag.history(period="2mo").to_csv("tickertag{}.csv".format(ticker))
 with open('tickertag{}.csv'.format(ticker),newline = '') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
@@ -51,14 +44,15 @@ with open('tickertag{}.csv'.format(ticker),newline = '') as csvfile:
     for i in range(date_cycle):
         num_days.append(i)
     #print(num_days)#test statement
+predicted_date=(num_days[-1]) +1
 xs = np.array(num_days, dtype = float)
 ys = np.array(high, dtype=float)
 
 
-model = keras.Sequential([keras.layers.Dense(units=3,input_shape =[1])])
+model = keras.Sequential([keras.layers.Dense(units=7,input_shape =[1])])
 model.compile(optimizer ='adam', loss = 'mean_squared_error')
 
 xs = np.array(num_days, dtype = float)
 ys = np.array(high, dtype=float)
-model.fit(xs,ys,epochs = 5000)
-print(model.predict(num_days[-1]+1))
+model.fit(xs,ys,epochs = 100)
+print(model.predict(predicted_date))
