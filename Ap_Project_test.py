@@ -6,10 +6,12 @@ import yfinance as yf
 import csv
 import numpy as np
 import keras
+
 # from tensorflow.keras.models import Sequential
 # from tensorflow.keras.layers import Dense
 # from tensorflow.keras.layers import LSTM
 # from tensorflow.keras.layers import Dropout
+
 
 dates = []
 high = []
@@ -31,7 +33,9 @@ if Companies == '4':
 
 
 tickerTag = yf.Ticker(ticker)
+
 tickerTag.history(period="1mo").to_csv("tickertag{}.csv".format(ticker))
+
 with open('tickertag{}.csv'.format(ticker),newline = '') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
@@ -45,22 +49,17 @@ with open('tickertag{}.csv'.format(ticker),newline = '') as csvfile:
     for i in range(date_cycle):
         num_days.append(i)
 
-plt.figure(figsize=(16,8))
-plt.title('Close Price History')
-plt.plot(dates, sorted(high))
-plt.xlabel("Dates" ,fontsize = 18)
-plt.ylabel('Close Price USD ($)', fontsize = 18)
-plt.show()
-
+    #print(num_days)#test statement
 predicted_date=(num_days[-1]) +1
 xs = np.array(num_days, dtype = float)
 ys = np.array(high, dtype=float)
 
 
-# model = keras.Sequential([keras.layers.Dense(units=12,input_shape =1)])
-# model.compile(optimizer ='adam', loss = 'MeanAbsolutePercentageError')
+model = keras.Sequential([keras.layers.Dense(units=7,input_shape =[1])])
+model.compile(optimizer ='adam', loss = 'mean_squared_error')
 
-# xs = np.array(num_days, dtype = float)
-# ys = np.array(high, dtype=float)
-# model.fit(xs,ys,epochs = 500)
-# print(model.predict(10))
+xs = np.array(num_days, dtype = float)
+ys = np.array(high, dtype=float)
+model.fit(xs,ys,epochs = 100)
+print(model.predict(predicted_date))
+
