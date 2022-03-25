@@ -43,14 +43,14 @@ for i in range(prediction_days, len(scaled_data)):
     x_train.append(scaled_data[i - prediction_days:i,0])
     y_train.append(scaled_data[i,0])
 
-x_train, y_train = np.array(x_train), np.array(y_train)
+x_train = np.array(x_train)
+y_train = np.array(y_train)
 x_train = np.reshape(x_train,(x_train.shape[0], x_train.shape[1],1))
 
 #building the model
 model = Sequential()
 
-#add one LSTM layer then one dropout and repeat
-#units = layers 
+#add LSTM layers and dropouts to maintian size
 model.add(LSTM(units = 50, return_sequences = True, input_shape= (x_train.shape[1],1)))
 model.add(Dropout(0.2))
 model.add(LSTM(units = 50, return_sequences = True))
@@ -70,7 +70,7 @@ model.fit(x_train,y_train,epochs = 20, batch_size = 32)
 test_start = dt.datetime(2021,1,1)
 test_end = dt.datetime.now()
 
-
+#using Yahoo finance with the chosen company and gets history from the test date to the end date
 test_data = web.DataReader(chosen_company, 'yahoo', test_start, test_end)
 actual_prices = test_data['Close'].values
 
@@ -93,8 +93,13 @@ predicted_prices =model.predict(x_test)
 predicted_prices = scaler.inverse_transform(predicted_prices)
 
 #plotting the test predictions
-plt.plot(actual_prices, color = "red", label = f"Actual {chosen_company} Price")
+#plots the actual price in green
+plt.plot(actual_prices, color = "green", label = f"Actual {chosen_company} Price")
+
+#plots the predicted price in blue
 plt.plot(predicted_prices, color = "blue", label = f"Predicted {chosen_company} Price")
+
+#titles and labels
 plt.title(f"{chosen_company} Share Price")
 plt.xlabel('Time')
 plt.ylabel(f'{chosen_company} Share Price')
@@ -109,6 +114,6 @@ real_data= np.reshape(real_data,(real_data.shape[0], real_data.shape[1],1))
 prediction = model.predict(real_data)
 prediction = scaler.inverse_transform(prediction)
 
+#shows the prediction and graph
 print(f"Prediction: {prediction}")
-
 plt.show()
