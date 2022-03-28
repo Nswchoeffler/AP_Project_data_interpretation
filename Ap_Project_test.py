@@ -6,17 +6,18 @@ import yfinance as yf
 import csv
 import numpy as np
 import keras
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import LSTM
-from tensorflow.keras.layers import Dropout
 
+# from tensorflow.keras.models import Sequential
+# from tensorflow.keras.layers import Dense
+# from tensorflow.keras.layers import LSTM
+# from tensorflow.keras.layers import Dropout
 
 
 dates = []
 high = []
 low = []
 num_days = []
+
 
 Companies = input("pick one, type the number of the company.\n1. google\n2. amazon\n3. apple\n4. tesla")
 if Companies == '1':
@@ -32,7 +33,9 @@ if Companies == '4':
 
 
 tickerTag = yf.Ticker(ticker)
-tickerTag.history(period="2mo").to_csv("tickertag{}.csv".format(ticker))
+
+tickerTag.history(period="1mo").to_csv("tickertag{}.csv".format(ticker))
+
 with open('tickertag{}.csv'.format(ticker),newline = '') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
@@ -41,8 +44,11 @@ with open('tickertag{}.csv'.format(ticker),newline = '') as csvfile:
         low.append(row['Low'])
     date_cycle = len(dates)
 
+
+
     for i in range(date_cycle):
         num_days.append(i)
+
     #print(num_days)#test statement
 predicted_date=(num_days[-1]) +1
 xs = np.array(num_days, dtype = float)
@@ -56,3 +62,4 @@ xs = np.array(num_days, dtype = float)
 ys = np.array(high, dtype=float)
 model.fit(xs,ys,epochs = 100)
 print(model.predict(predicted_date))
+

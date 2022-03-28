@@ -16,7 +16,7 @@ for i in range(len(companies)):
     i += 1
 
 #user selection
-company = input("Company would you like to use? Please type a number")
+company = input("Company would you like to use? Please type a number.")
 chosen_company = companies[int(company)-1]# -1 resets the value to be the lists value
 
 #establish the start and end of the data
@@ -26,16 +26,17 @@ end = dt.datetime.now()
 #uses yahoo finace
 data = web.DataReader(chosen_company, 'yahoo', start, end)
 
+
 #prepare Data fits them between 1 and 0 for simpliar prediction
 scaler = MinMaxScaler(feature_range = (0,1))
 scaled_data = scaler.fit_transform(data['Close'].values.reshape(-1,1))
 
-#set the time period
-prediction_days = 60
+prediction_days = 60 
 
 #creates empty lists for the x and y training data
 x_train = []
 y_train = []
+
 
 #uses previous scaling to scale the data
 for i in range(prediction_days, len(scaled_data)):
@@ -45,6 +46,9 @@ for i in range(prediction_days, len(scaled_data)):
 
 x_train = np.array(x_train)
 y_train = np.array(y_train)
+
+x_train, y_train = np.array(x_train), np.array(y_train)
+
 x_train = np.reshape(x_train,(x_train.shape[0], x_train.shape[1],1))
 
 #building the model
@@ -60,11 +64,12 @@ model.add(Dropout(0.2))
 
 model.add(Dense(units= 1))#prediction of the next price
 
+
 #using adam and mean_squared_error
 model.compile(optimizer = 'adam', loss ='mean_squared_error')
 
 #epochs = how many times -1 the data will be seen
-model.fit(x_train,y_train,epochs = 20, batch_size = 32)
+model.fit(x_train,y_train,epochs = 10, batch_size = 32)
 
 #testing the model accuracy with existing data
 test_start = dt.datetime(2021,1,1)
@@ -72,12 +77,15 @@ test_end = dt.datetime.now()
 
 #using Yahoo finance with the chosen company and gets history from the test date to the end date
 test_data = web.DataReader(chosen_company, 'yahoo', test_start, test_end)
+
 actual_prices = test_data['Close'].values
 
 total_dataset = pd.concat((data['Close'],test_data['Close']), axis =0)
 
 model_inputs = total_dataset[len(total_dataset)-len(test_data)-prediction_days:].values
-model_inputs = model_inputs.reshape(-1,1)
+
+model_inputs =  model_inputs.reshape(-1,1)
+
 model_inputs = scaler.transform(model_inputs)
 
 #make predictions on test data
@@ -93,6 +101,7 @@ predicted_prices =model.predict(x_test)
 predicted_prices = scaler.inverse_transform(predicted_prices)
 
 #plotting the test predictions
+
 #plots the actual price in green
 plt.plot(actual_prices, color = "green", label = f"Actual {chosen_company} Price")
 
@@ -108,11 +117,13 @@ plt.legend()
 
 # predicts next days price
 real_data = [model_inputs[len(model_inputs) + 1 - prediction_days:len(model_inputs + 1), 0]]
+
 real_data = np.array(real_data)
 real_data= np.reshape(real_data,(real_data.shape[0], real_data.shape[1],1))
 
 prediction = model.predict(real_data)
 prediction = scaler.inverse_transform(prediction)
+
 
 #shows the prediction and graph
 print(f"Prediction: {prediction}")
