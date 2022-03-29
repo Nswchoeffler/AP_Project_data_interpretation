@@ -9,15 +9,16 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, LSTM
 
 #loading company ticker
-companies = ['FB','GOOGL','AMZN','AAPL','TSLA'] #company list
+companies_tickers = ['FB','GOOGL','AMZN','AAPL','TSLA'] #company list
+company_name = ['Meta Platforms','Google','Amazon', 'Apple','Tesla']
 #prints the companies with a numerical value to allow the user easier selection
-for i in range(len(companies)):
-    print(f"{i + 1}. {companies[i]}")
+for i in range(len(companies_tickers)):
+    print(f"{i + 1}. {companies_tickers[i]} = {company_name[i]}")
     i += 1
 
 #user selection
 company = input("Company would you like to use? Please type a number.")
-chosen_company = companies[int(company)-1]# -1 resets the value to be the lists value
+chosen_company = companies_tickers[int(company)-1]# -1 resets the value to be the lists value
 
 #establish the start and end of the data
 start = dt.datetime(2012,1,1)
