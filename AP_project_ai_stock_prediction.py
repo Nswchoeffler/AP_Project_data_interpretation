@@ -18,14 +18,14 @@ for i in range(len(companies_tickers)):
 
 #user selection
 company = input("Company would you like to use? Please type a number.")
-chosen_company = companies_tickers[int(company)-1]# -1 resets the value to be the lists value
+user_chosen_company = companies_tickers[int(company)-1]# -1 resets the value to be the lists value
 
 #establish the start and end of the data
-start = dt.datetime(2012,1,1)
-end = dt.datetime.now()
+start_date = dt.datetime(2012,1,1)
+end_date = dt.datetime.now()
 
 #uses yahoo finace
-data = web.DataReader(chosen_company, 'yahoo', start, end)
+data = web.DataReader(user_chosen_company, 'yahoo', start_date, end_date)
 
 
 #prepare Data fits them between 1 and 0 for simpliar prediction
@@ -47,8 +47,6 @@ for i in range(prediction_days, len(scaled_data)):
 
 x_train = np.array(x_train)
 y_train = np.array(y_train)
-
-x_train, y_train = np.array(x_train), np.array(y_train)
 
 x_train = np.reshape(x_train,(x_train.shape[0], x_train.shape[1],1))
 
@@ -77,7 +75,7 @@ test_start = dt.datetime(2021,1,1)
 test_end = dt.datetime.now()
 
 #using Yahoo finance with the chosen company and gets history from the test date to the end date
-test_data = web.DataReader(chosen_company, 'yahoo', test_start, test_end)
+test_data = web.DataReader(user_chosen_company, 'yahoo', test_start, test_end)
 
 actual_prices = test_data['Close'].values
 
@@ -104,15 +102,15 @@ predicted_prices = scaler.inverse_transform(predicted_prices)
 #plotting the test predictions
 
 #plots the actual price in green
-plt.plot(actual_prices, color = "green", label = f"Actual {chosen_company} Price")
+plt.plot(actual_prices, color = "green", label = f"Actual {user_chosen_company} Price")
 
 #plots the predicted price in blue
-plt.plot(predicted_prices, color = "blue", label = f"Predicted {chosen_company} Price")
+plt.plot(predicted_prices, color = "blue", label = f"Predicted {user_chosen_company} Price")
 
 #titles and labels
-plt.title(f"{chosen_company} Share Price")
+plt.title(f"{user_chosen_company} Share Price")
 plt.xlabel('Time')
-plt.ylabel(f'{chosen_company} Share Price')
+plt.ylabel(f'{user_chosen_company} Share Price')
 plt.legend()
 
 
